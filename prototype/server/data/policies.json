@@ -1,0 +1,60 @@
+[
+  {
+    "id": "POL-HEALTH-001",
+    "policyNumber": "HLTH-2024-78901",
+    "userId": "user-1",
+    "holderName": "John Doe",
+    "type": "health",
+    "provider": "InsureCo Health",
+    "coverageAmount": 500000,
+    "deductible": 5000,
+    "premium": 12000,
+    "startDate": "2025-01-01",
+    "endDate": "2025-12-31",
+    "status": "active",
+    "coverageDetails": {
+      "hospitalization": true,
+      "surgery": true,
+      "maternity": false,
+      "dental": false,
+      "vision": true
+    }
+  },
+  {
+    "id": "POL-VEHICLE-001",
+    "policyNumber": "VEH-2024-45678",
+    "userId": "user-1",
+    "holderName": "John Doe",
+    "type": "vehicle",
+    "provider": "InsureCo Auto",
+    "vehicleNumber": "MH-01-AB-1234",
+    "vehicleModel": "Honda City 2022",
+    "coverageAmount": 800000,
+    "deductible": 2500,
+    "premium": 15000,
+    "startDate": "2025-03-15",
+    "endDate": "2026-03-14",
+    "status": "active",
+    "coverageDetails": {
+      "thirdParty": true,
+      "ownDamage": true,
+      "theft": true,
+      "naturalDisaster": true,
+      "personalAccident": true
+    }
+  },
+  {
+    "id": "POL-HEALTH-002",
+    "policyNumber": "HLTH-2023-12345",
+    "userId": "user-1",
+    "holderName": "John Doe",
+    "type": "health",
+    "provider": "InsureCo Health",
+    "coverageAmount": 300000,
+    "deductible": 3000,
+    "premium": 8000,
+    "startDate": "2023-01-01",
+    "endDate": "2023-12-31",
+    "status": "expired"
+  }
+]

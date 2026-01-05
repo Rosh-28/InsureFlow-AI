@@ -1,0 +1,16 @@
+[
+  {
+    "id": "user-1",
+    "email": "user@example.com",
+    "name": "John Doe",
+    "phone": "+91 98765 43210",
+    "role": "user"
+  },
+  {
+    "id": "admin-1",
+    "email": "admin@insureco.com",
+    "name": "Admin User",
+    "role": "admin",
+    "company": "InsureCo"
+  }
+]

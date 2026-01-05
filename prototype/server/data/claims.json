@@ -1,0 +1,196 @@
+[
+  {
+    "id": "CLM-1734700000001",
+    "userId": "user-1",
+    "policyId": "POL-HEALTH-001",
+    "type": "health",
+    "description": "Hospital admission for viral fever treatment",
+    "claimAmount": 25000,
+    "status": "approved",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2024-12-01T10:00:00Z",
+        "note": "Claim submitted"
+      },
+      {
+        "status": "under_review",
+        "timestamp": "2024-12-01T10:05:00Z",
+        "note": "AI processing complete"
+      },
+      {
+        "status": "approved",
+        "timestamp": "2024-12-02T14:30:00Z",
+        "note": "Claim approved",
+        "by": "admin-1"
+      }
+    ],
+    "riskAssessment": {
+      "riskScore": 2,
+      "riskLevel": "low",
+      "recommendation": "approve"
+    },
+    "createdAt": "2024-12-01T10:00:00Z",
+    "updatedAt": "2024-12-02T14:30:00Z"
+  },
+  {
+    "id": "CLM-1734700000002",
+    "userId": "user-1",
+    "policyId": "POL-VEHICLE-001",
+    "type": "vehicle",
+    "description": "Minor accident - front bumper damage",
+    "claimAmount": 15000,
+    "status": "under_review",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2024-12-15T09:00:00Z",
+        "note": "Claim submitted"
+      },
+      {
+        "status": "under_review",
+        "timestamp": "2024-12-15T09:10:00Z",
+        "note": "AI processing complete"
+      }
+    ],
+    "riskAssessment": {
+      "riskScore": 5,
+      "riskLevel": "medium",
+      "recommendation": "review"
+    },
+    "createdAt": "2024-12-15T09:00:00Z",
+    "updatedAt": "2024-12-15T09:10:00Z"
+  },
+  {
+    "id": "CLM-1734700000003",
+    "userId": "user-1",
+    "policyId": "POL-HEALTH-001",
+    "type": "health",
+    "description": "Dental treatment",
+    "claimAmount": 8000,
+    "status": "rejected",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2024-11-20T11:00:00Z",
+        "note": "Claim submitted"
+      },
+      {
+        "status": "under_review",
+        "timestamp": "2024-11-20T11:05:00Z",
+        "note": "AI processing complete"
+      },
+      {
+        "status": "rejected",
+        "timestamp": "2024-11-21T16:00:00Z",
+        "note": "Dental not covered under policy",
+        "by": "admin-1"
+      }
+    ],
+    "riskAssessment": {
+      "riskScore": 3,
+      "riskLevel": "low",
+      "recommendation": "review"
+    },
+    "createdAt": "2024-11-20T11:00:00Z",
+    "updatedAt": "2024-11-21T16:00:00Z"
+  },
+  {
+    "id": "CLM-1766326822112",
+    "userId": "user-1",
+    "policyId": "POL-HEALTH-001",
+    "type": "health",
+    "description": "I want heehehhee",
+    "claimAmount": 80000,
+    "policyData": {
+      "id": "POL-HEALTH-001",
+      "policyNumber": "HLTH-2024-78901",
+      "holderName": "John Doe",
+      "type": "health",
+      "coverageAmount": 500000,
+      "startDate": "2025-01-01",
+      "endDate": "2025-12-31",
+      "status": "active"
+    },
+    "documents": [
+      {
+        "id": "9136cd84-516d-45e0-a8a5-779c1fb8217e",
+        "filename": "1766326822106-f04847df-9d74-4c2a-835f-13aac5783b00.jpg",
+        "originalName": "WhatsApp Image 2025-07-22 at 22.08.36_1e714aed.jpg",
+        "mimeType": "image/jpeg",
+        "size": 122709,
+        "path": "/uploads/1766326822106-f04847df-9d74-4c2a-835f-13aac5783b00.jpg"
+      }
+    ],
+    "status": "under_review",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2025-12-21T14:20:22.112Z",
+        "note": "Claim submitted"
+      }
+    ],
+    "createdAt": "2025-12-21T14:20:22.112Z",
+    "updatedAt": "2025-12-21T14:20:22.112Z",
+    "processingError": "riskAssessment is already being used as a state attribute (a.k.a. a channel), cannot also be used as a node name."
+  },
+  {
+    "id": "CLM-1767630626881",
+    "userId": "user-1",
+    "policyId": "POL-VEHICLE-001",
+    "type": "health",
+    "description": "hello hello fuck rosh",
+    "claimAmount": 10000000000,
+    "policyData": {
+      "id": "POL-VEHICLE-001",
+      "policyNumber": "VEH-2024-45678",
+      "holderName": "John Doe",
+      "type": "vehicle",
+      "coverageAmount": 800000,
+      "startDate": "2025-03-15",
+      "endDate": "2026-03-14",
+      "status": "active"
+    },
+    "documents": [
+      {
+        "id": "f9c135a5-f946-4d37-91a1-29bcfa6eea4a",
+        "filename": "1767630626875-75f3f4d4-d59a-49fd-a66c-8a95a4284cbe.jpg",
+        "originalName": "IMG-20251127-WA0007.jpg",
+        "mimeType": "image/jpeg",
+        "size": 108045,
+        "path": "/uploads/1767630626875-75f3f4d4-d59a-49fd-a66c-8a95a4284cbe.jpg"
+      }
+    ],
+    "status": "approved",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2026-01-05T16:30:26.881Z",
+        "note": "Claim submitted"
+      },
+      {
+        "status": "under_review",
+        "timestamp": "2026-01-05T16:30:37.877Z",
+        "note": "AI processing complete"
+      },
+      {
+        "status": "approved",
+        "timestamp": "2026-01-05T16:31:39.635Z",
+        "note": "Status changed to approved",
+        "by": "admin-1"
+      }
+    ],
+    "createdAt": "2026-01-05T16:30:26.881Z",
+    "updatedAt": "2026-01-05T16:31:39.635Z",
+    "verification": {
+      "isValid": false,
+      "error": "Processing failed"
+    },
+    "riskAssessment": {
+      "riskScore": 5,
+      "riskLevel": "medium",
+      "recommendation": "review"
+    },
+    "reviewedBy": "admin-1"
+  }
+]
