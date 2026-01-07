@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { claimsApi } from '../../services/api';
+import { claimsApi, getServerUrl } from '../../services/api';
 import { 
   ArrowLeft, 
   Clock, 
@@ -170,7 +170,7 @@ export default function ClaimDetail() {
                     {claim.verification.isValid ? 'Documents Verified' : 'Review Required'}
                   </span>
                 </div>
-                {claim.verification.confidence && (
+                {claim.verification.confidence !== undefined && claim.verification.confidence !== null && (
                   <p className="text-sm text-gray-600">
                     Confidence: {claim.verification.confidence}%
                   </p>
@@ -260,10 +260,12 @@ export default function ClaimDetail() {
                   </p>
                 </div>
                 <a
-                  href={doc.path}
+                  href={`${getServerUrl()}${doc.path}`}
+                  download={doc.originalName}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 text-gray-400 hover:text-primary-600"
+                  className="p-2 text-gray-400 hover:text-primary-600 hover:bg-gray-100 rounded"
+                  title="Download document"
                 >
                   <Download size={18} />
                 </a>

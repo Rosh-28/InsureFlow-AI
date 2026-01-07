@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../App';
-import { claimsApi } from '../../services/api';
+import { claimsApi, getServerUrl } from '../../services/api';
 import { 
   ArrowLeft, 
   Clock, 
@@ -189,7 +189,13 @@ export default function AdminClaimReview() {
                       </span>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Confidence: {claim.verification.confidence || 'N/A'}%
+                      Confidence: <span className={`font-medium ${
+                        claim.verification.confidence >= 80 ? 'text-green-600' :
+                        claim.verification.confidence >= 50 ? 'text-yellow-600' :
+                        'text-red-600'
+                      }`}>
+                        {claim.verification.confidence !== undefined && claim.verification.confidence !== null ? claim.verification.confidence : 0}%
+                      </span>
                     </p>
                     {claim.verification.issues?.length > 0 && (
                       <ul className="mt-2 text-sm text-red-600 list-disc list-inside">
@@ -253,10 +259,12 @@ export default function AdminClaimReview() {
                       <p className="text-xs text-gray-500">{(doc.size / 1024).toFixed(1)} KB</p>
                     </div>
                     <a
-                      href={doc.path}
+                      href={`${getServerUrl()}${doc.path}`}
+                      download={doc.originalName}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 text-gray-400 hover:text-primary-600"
+                      className="p-2 text-gray-400 hover:text-primary-600 hover:bg-gray-100 rounded"
+                      title="Download document"
                     >
                       <Download size={18} />
                     </a>

@@ -125,8 +125,10 @@ export const verifyDocuments = async (documents, claimType, policyData) => {
   const hasAllRequired = missingDocs.length === 0;
   const validDocs = verificationResults.filter(r => r.isValid).length;
   const confidence = documents.length > 0 
-    ? Math.round((validDocs / documents.length) * 100 * (hasAllRequired ? 1 : 0.5))
+    ? Math.max(0, Math.min(100, Math.round((validDocs / documents.length) * 100 * (hasAllRequired ? 1 : 0.5))))
     : 0;
+  
+  console.log(`  ✅ Verification complete: ${validDocs}/${documents.length} valid, confidence: ${confidence}%`);
 
   return {
     isValid: hasAllRequired && issues.length === 0,

@@ -1,4 +1,8 @@
 const API_BASE = '/api';
+const SERVER_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+// Export for use in components
+export const getServerUrl = () => SERVER_URL;
 
 // Get auth token
 const getToken = () => localStorage.getItem('token');
@@ -90,7 +94,14 @@ export const authApi = {
 // Claims API
 export const claimsApi = {
   getAll: (filters = {}) => {
-    const params = new URLSearchParams(filters).toString();
+    // Remove undefined, null, and empty values from filters
+    const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    const params = new URLSearchParams(cleanFilters).toString();
     return apiRequest(`/claims${params ? `?${params}` : ''}`);
   },
   
