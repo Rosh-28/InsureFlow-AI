@@ -14,11 +14,11 @@ import authRouter from './routes/auth.js';
 // Error handler
 import { errorHandler } from './services/errorHandler.js';
 
-//
-dotenv.config(); // Load .env in current directory
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load .env from prototype directory (parent directory)
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

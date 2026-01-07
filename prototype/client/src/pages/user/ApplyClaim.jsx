@@ -132,25 +132,68 @@ export default function ApplyClaim() {
   // OCR Processing
   const handlePolicyFileUpload = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    console.log('📎 [OCR Client] File selected:', file ? 'Yes' : 'No');
+    
+    if (!file) {
+      console.log('⚠️  [OCR Client] No file selected, aborting');
+      return;
+    }
+
+    console.log('📄 [OCR Client] File details:');
+    console.log('    Name:', file.name);
+    console.log('    Type:', file.type);
+    console.log('    Size:', file.size, 'bytes', '(' + (file.size / 1024 / 1024).toFixed(2) + ' MB)');
+    console.log('    Last modified:', new Date(file.lastModified).toISOString());
 
     setPolicyFile(file);
     setOcrLoading(true);
     setError('');
 
     try {
+      console.log('🚀 [OCR Client] Calling policiesApi.ocr()...');
+      const startTime = performance.now();
+      
       const result = await policiesApi.ocr(file);
+      
+      const duration = (performance.now() - startTime).toFixed(2);
+      console.log(`✅ [OCR Client] OCR completed in ${duration}ms`);
+      console.log('📊 [OCR Client] Result:');
+      console.log('    Confidence:', result.confidence);
+      console.log('    Message:', result.message);
+      console.log('    Extracted data:', result.extracted);
+      
       setOcrResult(result);
       
       if (result.extracted) {
-        setPolicyData(result.extracted);
+        console.log('✅ [OCR Client] Setting policy data from extracted information');
+        
+        // Safely set policy data, filtering out null/undefined values
+        const cleanedData = {};
+        Object.entries(result.extracted).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && typeof value !== 'object') {
+            cleanedData[key] = value;
+          }
+        });
+        
+        setPolicyData(cleanedData);
+        
         if (result.extracted.policyNumber) {
+          console.log('    Setting policy number:', result.extracted.policyNumber);
           setPolicyNumber(result.extracted.policyNumber);
+        } else {
+          console.log('⚠️  [OCR Client] No policy number in extracted data');
         }
+      } else {
+        console.log('⚠️  [OCR Client] No extracted data in result');
       }
     } catch (err) {
+      console.error('❌ [OCR Client] OCR failed:');
+      console.error('    Error type:', err.constructor.name);
+      console.error('    Error message:', err.message);
+      console.error('    Error stack:', err.stack);
       setError('Failed to process document. Please try again or enter details manually.');
     } finally {
+      console.log('🏁 [OCR Client] OCR process finished, loading state: false');
       setOcrLoading(false);
     }
   };
@@ -435,15 +478,29 @@ export default function ApplyClaim() {
 
                 {ocrResult?.extracted && (
                   <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <h4 className="font-medium text-green-800 mb-2">Extracted Details</h4>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      {Object.entries(ocrResult.extracted).map(([key, value]) => (
-                        <div key={key}>
-                          <span className="text-gray-500 capitalize">{key.replace(/([A-Z])/g, ' $1')}: </span>
-                          <span className="text-gray-900">{value}</span>
-                        </div>
-                      ))}
+                    <h4 className="font-medium text-green-800 mb-2">✅ Extracted Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      {Object.entries(ocrResult.extracted).map(([key, value]) => {
+                        // Skip null, undefined, or nested object values
+                        if (value === null || value === undefined || typeof value === 'object') return null;
+                        
+                        // Format the key nicely
+                        const formattedKey = key
+                          .replace(/([A-Z])/g, ' $1')
+                          .replace(/^./, str => str.toUpperCase())
+                          .trim();
+                        
+                        return (
+                          <div key={key} className="flex flex-col">
+                            <span className="text-gray-500 text-xs font-medium">{formattedKey}</span>
+                            <span className="text-gray-900 font-medium">{String(value)}</span>
+                          </div>
+                        );
+                      }).filter(Boolean)}
                     </div>
+                    {ocrResult.confidence === 'low' && (
+                      <p className="text-sm text-amber-600 mt-2">⚠️ Please verify the extracted details</p>
+                    )}
                   </div>
                 )}
               </div>

@@ -7,6 +7,32 @@ const getToken = () => localStorage.getItem('token');
 const apiRequest = async (endpoint, options = {}) => {
   const token = getToken();
   
+  console.log(`🌎 [API] Request to ${endpoint}`);
+  console.log('    Method:', options.method || 'GET');
+  console.log('    Has token:', !!token);
+  
+  // Log body type for debugging
+  if (options.body) {
+    if (options.body instanceof FormData) {
+      console.log('    Body type: FormData');
+      // Log FormData entries if possible
+      try {
+        for (let [key, value] of options.body.entries()) {
+          if (value instanceof File) {
+            console.log(`    FormData[${key}]: File(${value.name}, ${value.size} bytes, ${value.type})`);
+          } else {
+            console.log(`    FormData[${key}]:`, value);
+          }
+        }
+      } catch (e) {
+        console.log('    FormData entries: (unable to enumerate)');
+      }
+    } else {
+      console.log('    Body type:', typeof options.body);
+      console.log('    Body preview:', options.body.substring ? options.body.substring(0, 100) : options.body);
+    }
+  }
+  
   const config = {
     ...options,
     headers: {
@@ -16,11 +42,31 @@ const apiRequest = async (endpoint, options = {}) => {
     }
   };
 
+  console.log('    Headers:', Object.keys(config.headers).join(', '));
+  console.log(`🚀 [API] Sending request...`);
+  const startTime = performance.now();
+  
   const response = await fetch(`${API_BASE}${endpoint}`, config);
+  
+  const duration = (performance.now() - startTime).toFixed(2);
+  console.log(`✅ [API] Response received in ${duration}ms`);
+  console.log('    Status:', response.status, response.statusText);
+  console.log('    Content-Type:', response.headers.get('content-type'));
+  
   const data = await response.json();
-
+  console.log('    Success:', data.success);
+  
   if (!data.success) {
+    console.error('❌ [API] Request failed:');
+    console.error('    Error code:', data.error?.code);
+    console.error('    Error message:', data.error?.message);
+    console.error('    Full error:', data.error);
     throw new Error(data.error?.message || 'Request failed');
+  }
+  
+  console.log('✅ [API] Request successful');
+  if (data.data && typeof data.data === 'object') {
+    console.log('    Response data keys:', Object.keys(data.data).join(', '));
   }
 
   return data.data;
