@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       approved: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle },
       rejected: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle },
       under_review: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock },
-      processing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Clock }
+      processing: { bg: 'bg-primary-100', text: 'text-primary-700', icon: Clock }
     };
     const c = config[status] || config.processing;
     const Icon = c.icon;
@@ -213,20 +213,20 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+      <div className="bg-primary-50 border border-primary-200 rounded-xl p-4">
         <div className="flex items-center gap-3">
-          <AlertTriangle className="text-blue-600" size={20} />
+          <AlertTriangle className="text-primary-600" size={20} />
           <div>
-            <p className="font-medium text-blue-900">
+            <p className="font-medium text-primary-900">
               {stats?.pending || 0} claims need your attention
             </p>
-            <p className="text-sm text-blue-700">
+            <p className="text-sm text-primary-700">
               Review pending claims to ensure timely processing
             </p>
           </div>
           <Link 
             to="/admin/claims?status=under_review" 
-            className="ml-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="ml-auto px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
           >
             Review Now
           </Link>
@@ -238,7 +238,7 @@ export default function AdminDashboard() {
 
 function StatCard({ label, value, icon: Icon, color, highlight }) {
   const colors = {
-    blue: 'bg-blue-50 text-blue-600',
+    blue: 'bg-primary-50 text-primary-600',
     yellow: 'bg-yellow-50 text-yellow-600',
     green: 'bg-green-50 text-green-600',
     red: 'bg-red-50 text-red-600'

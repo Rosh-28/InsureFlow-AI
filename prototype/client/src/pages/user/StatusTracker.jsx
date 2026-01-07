@@ -72,8 +72,8 @@ export default function StatusTracker() {
       case 'processing':
         return { 
           icon: Clock, 
-          color: 'text-blue-600', 
-          bg: 'bg-blue-100',
+          color: 'text-primary-600', 
+          bg: 'bg-primary-100',
           label: 'Processing'
         };
       default:

@@ -14,7 +14,8 @@ import authRouter from './routes/auth.js';
 // Error handler
 import { errorHandler } from './services/errorHandler.js';
 
-dotenv.config({ path: '../.env' });
+//
+dotenv.config(); // Load .env in current directory
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

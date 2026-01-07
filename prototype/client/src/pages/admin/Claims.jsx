@@ -75,7 +75,7 @@ export default function AdminClaims() {
       approved: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle },
       rejected: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle },
       under_review: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock },
-      processing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Clock }
+      processing: { bg: 'bg-primary-100', text: 'text-primary-700', icon: Clock }
     };
     const c = config[status] || config.processing;
     const Icon = c.icon;

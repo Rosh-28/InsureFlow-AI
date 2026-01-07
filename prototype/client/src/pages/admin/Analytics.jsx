@@ -185,7 +185,7 @@ export default function Analytics() {
           <div className="flex items-end justify-center gap-8 h-48">
             <div className="text-center">
               <div 
-                className="w-20 bg-blue-500 rounded-t-lg mx-auto"
+                className="w-20 bg-primary-500 rounded-t-lg mx-auto"
                 style={{ height: `${Math.max((stats?.byType?.health || 0) * 30, 20)}px` }}
               />
               <div className="mt-3">
@@ -198,7 +198,7 @@ export default function Analytics() {
             
             <div className="text-center">
               <div 
-                className="w-20 bg-purple-500 rounded-t-lg mx-auto"
+                className="w-20 bg-primary-500 rounded-t-lg mx-auto"
                 style={{ height: `${Math.max((stats?.byType?.vehicle || 0) * 30, 20)}px` }}
               />
               <div className="mt-3">
@@ -288,9 +288,9 @@ export default function Analytics() {
             <p className="text-sm text-gray-500 mb-1">Approved Value</p>
             <p className="text-2xl font-bold text-green-700">{formatCurrency(stats?.approvedAmount || 0)}</p>
           </div>
-          <div className="p-4 bg-blue-50 rounded-lg">
+          <div className="p-4 bg-primary-50 rounded-lg">
             <p className="text-sm text-gray-500 mb-1">Avg Approved Claim</p>
-            <p className="text-2xl font-bold text-blue-700">{formatCurrency(metrics.avgApprovedAmount || 0)}</p>
+            <p className="text-2xl font-bold text-primary-700">{formatCurrency(metrics.avgApprovedAmount || 0)}</p>
           </div>
         </div>
       </div>

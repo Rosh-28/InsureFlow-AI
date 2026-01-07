@@ -227,12 +227,12 @@ export default function UserDashboard() {
       </div>
 
       {/* Quick Tips */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+      <div className="bg-primary-50 border border-primary-200 rounded-xl p-4">
         <div className="flex items-start gap-3">
-          <AlertCircle className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
+          <AlertCircle className="text-primary-600 flex-shrink-0 mt-0.5" size={20} />
           <div>
-            <p className="font-medium text-blue-900">Quick Tip</p>
-            <p className="text-sm text-blue-700 mt-1">
+            <p className="font-medium text-primary-900">Quick Tip</p>
+            <p className="text-sm text-primary-700 mt-1">
               Use our AI assistant to get help with filing claims or understanding your policy coverage. 
               Click the "AI Assistant" button in the top right corner!
             </p>
@@ -245,7 +245,7 @@ export default function UserDashboard() {
 
 function StatCard({ label, value, icon: Icon, color }) {
   const colors = {
-    blue: 'bg-blue-50 text-blue-600',
+    blue: 'bg-primary-50 text-primary-600',
     yellow: 'bg-yellow-50 text-yellow-600',
     green: 'bg-green-50 text-green-600',
     red: 'bg-red-50 text-red-600'

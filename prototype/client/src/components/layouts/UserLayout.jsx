@@ -51,7 +51,7 @@ export default function UserLayout() {
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
-            <span className="text-xl font-bold text-primary-600">ClaimSmart</span>
+            <span className="text-xl font-bold text-primary-600">InsureFlowAI</span>
             <button 
               className="lg:hidden p-1 hover:bg-gray-100 rounded"
               onClick={() => setSidebarOpen(false)}

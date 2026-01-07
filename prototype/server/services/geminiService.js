@@ -2,7 +2,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 import { retryWithBackoff, AppError } from './errorHandler.js';
 
-dotenv.config({ path: '../.env' });
+
+dotenv.config(); // Load .env in current directory
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const MODEL = process.env.MODEL || 'gemini-2.5-flash';

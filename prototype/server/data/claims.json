@@ -105,7 +105,7 @@
     "policyData": {
       "id": "POL-HEALTH-001",
       "policyNumber": "HLTH-2024-78901",
-      "holderName": "John Doe",
+      "holderName": "Aarun Kulkarni",
       "type": "health",
       "coverageAmount": 500000,
       "startDate": "2025-01-01",
@@ -144,7 +144,7 @@
     "policyData": {
       "id": "POL-VEHICLE-001",
       "policyNumber": "VEH-2024-45678",
-      "holderName": "John Doe",
+      "holderName": "Aarun Kulkarni",
       "type": "vehicle",
       "coverageAmount": 800000,
       "startDate": "2025-03-15",

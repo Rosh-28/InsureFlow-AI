@@ -77,7 +77,7 @@ export default function AdminClaimReview() {
       approved: { icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100', label: 'Approved' },
       rejected: { icon: XCircle, color: 'text-red-600', bg: 'bg-red-100', label: 'Rejected' },
       under_review: { icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100', label: 'Under Review' },
-      processing: { icon: Clock, color: 'text-blue-600', bg: 'bg-blue-100', label: 'Processing' },
+      processing: { icon: Clock, color: 'text-primary-600', bg: 'bg-primary-100', label: 'Processing' },
       submitted: { icon: FileText, color: 'text-gray-600', bg: 'bg-gray-100', label: 'Submitted' }
     };
     return configs[status] || configs.processing;

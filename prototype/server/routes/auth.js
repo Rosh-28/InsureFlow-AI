@@ -9,7 +9,7 @@ const users = [
     id: 'user-1',
     email: 'user@example.com',
     password: 'password123',
-    name: 'John Doe',
+    name: 'Aarun Kulkarni',
     role: 'user',
     phone: '+91 98765 43210'
   },

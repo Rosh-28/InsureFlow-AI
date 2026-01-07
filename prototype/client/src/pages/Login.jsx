@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
-import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import logo from '../../llooggoo.png';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -48,15 +49,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-blue-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-lg mb-4">
-            <Shield size={32} className="text-primary-600" />
+          <div className="inline-flex items-center justify-center w-45 h-45 bg-white rounded-2xl shadow-lg mb-4 overflow-hidden">
+            <img src={logo} alt="InsureFlowAI logo" className="w-38 h-25 object-contain" />
           </div>
-          <h1 className="text-3xl font-bold text-white">ClaimSmart</h1>
-          <p className="text-primary-200 mt-2">Smart Insurance Claim Automation</p>
+          <h1 className="text-3xl font-bold text-blue-900">InsureFlowAI</h1>
+          <p className="text-blue-700 mt-2">Smart Insurance Claim Automation</p>
         </div>
 
         {/* Card */}
@@ -82,7 +83,7 @@ export default function Login() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="John Doe"
+                  placeholder="Aarun Kulkarni"
                   required={!isLogin}
                 />
               </div>

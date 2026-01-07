@@ -491,9 +491,9 @@ export default function ApplyClaim() {
             <h2 className="text-lg font-semibold text-gray-900">Upload Supporting Documents</h2>
             
             {requirements && (
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="font-medium text-blue-800 mb-2">Required Documents</h4>
-                <ul className="text-sm text-blue-700 space-y-1">
+              <div className="p-4 bg-primary-50 border border-primary-200 rounded-lg">
+                <h4 className="font-medium text-primary-800 mb-2">Required Documents</h4>
+                <ul className="text-sm text-primary-700 space-y-1">
                   {requirements.required?.map((doc) => (
                     <li key={doc.id} className="flex items-center gap-2">
                       <FileText size={14} />

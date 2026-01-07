@@ -43,7 +43,7 @@ export default function ClaimDetail() {
       case 'under_review':
         return { icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100', label: 'Under Review' };
       case 'processing':
-        return { icon: Clock, color: 'text-blue-600', bg: 'bg-blue-100', label: 'Processing' };
+        return { icon: Clock, color: 'text-primary-600', bg: 'bg-primary-100', label: 'Processing' };
       case 'submitted':
         return { icon: FileText, color: 'text-gray-600', bg: 'bg-gray-100', label: 'Submitted' };
       default:

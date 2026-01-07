@@ -28,6 +28,78 @@ export default function ChatAssistant({ isOpen, onClose }) {
     scrollToBottom();
   }, [messages]);
 
+  // Simple inline markdown parser for **bold** and *italic*
+  const parseInline = (text) => {
+    if (!text) return null;
+    const elements = [];
+    const regex = /\*\*([^*]+)\*\*|\*([^*]+)\*/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        elements.push(text.slice(lastIndex, match.index));
+      }
+      if (match[1]) {
+        elements.push(<strong key={match.index}>{match[1]}</strong>);
+      } else if (match[2]) {
+        elements.push(<em key={match.index}>{match[2]}</em>);
+      }
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      elements.push(text.slice(lastIndex));
+    }
+
+    return elements.length === 1 ? elements[0] : elements;
+  };
+
+  // Lightweight block parser: paragraphs, ordered lists (1.), unordered lists (* or -)
+  const renderMarkdown = (input) => {
+    if (!input) return null;
+    const blocks = input.split(/\n{2,}/g);
+
+    return blocks.map((block, bi) => {
+      const lines = block.split('\n').filter(Boolean);
+
+      // Ordered list (every line starts with "1. " or "2. ")
+      if (lines.every(line => /^\s*\d+\.\s+/.test(line))) {
+        return (
+          <ol className="list-decimal list-inside mb-2" key={bi}>
+            {lines.map((line, i) => {
+              const content = line.replace(/^\s*\d+\.\s+/, '');
+              return <li key={i}>{parseInline(content)}</li>;
+            })}
+          </ol>
+        );
+      }
+
+      // Unordered list
+      if (lines.every(line => /^\s*[\*\-\+]\s+/.test(line))) {
+        return (
+          <ul className="list-disc list-inside mb-2" key={bi}>
+            {lines.map((line, i) => {
+              const content = line.replace(/^\s*[\*\-\+]\s+/, '');
+              return <li key={i}>{parseInline(content)}</li>;
+            })}
+          </ul>
+        );
+      }
+
+      // Fallback: paragraph with line breaks preserved
+      return (
+        <p className="mb-2" key={bi}>
+          {lines.map((line, li) => (
+            <span key={li}>
+              {parseInline(line)}{li < lines.length - 1 && <br />}
+            </span>
+          ))}
+        </p>
+      );
+    });
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 
@@ -148,7 +220,7 @@ export default function ChatAssistant({ isOpen, onClose }) {
                     : 'bg-gray-100 text-gray-800'
               }`}
             >
-              <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+              <div className="text-sm">{renderMarkdown(msg.content)}</div>
               {msg.role === 'assistant' && !msg.error && (
                 <button
                   onClick={() => playTTS(msg.content)}
