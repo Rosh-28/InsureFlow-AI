@@ -1,48 +1,30 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import { asyncHandler } from '../services/errorHandler.js';
+import { getUserByEmail, getUserById } from '../data/mongoStore.js';
+import User from '../data/models/User.js';
 
 const router = express.Router();
-
-// Mock users database
-const users = [
-  {
-    id: 'user-1',
-    email: 'user@example.com',
-    password: 'password123',
-    name: 'Aarun Kulkarni',
-    role: 'user',
-    phone: '+91 98765 43210'
-  },
-  {
-    id: 'admin-1',
-    email: 'admin@insureco.com',
-    password: 'admin123',
-    name: 'Admin User',
-    role: 'admin',
-    company: 'InsureCo'
-  }
-];
 
 // Login
 router.post('/login', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = users.find(u => u.email === email && u.password === password);
+  const user = await getUserByEmail(email);
 
-  if (!user) {
+  if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).json({
       success: false,
       error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' }
     });
   }
 
-  // Return user without password
-  const { password: _, ...userWithoutPassword } = user;
+  const userObj = user.toJSON();
 
   res.json({
     success: true,
     data: {
-      user: userWithoutPassword,
+      user: userObj,
       token: `mock-token-${user.id}-${Date.now()}`
     }
   });
@@ -51,7 +33,7 @@ router.post('/login', asyncHandler(async (req, res) => {
 // Get current user (mock auth check)
 router.get('/me', asyncHandler(async (req, res) => {
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
       success: false,
@@ -60,9 +42,11 @@ router.get('/me', asyncHandler(async (req, res) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const userId = token.split('-')[2]; // Extract user ID from mock token
+  // Token format: mock-token-{userId}-{timestamp} e.g. mock-token-user-1-1734700000
+  const parts = token.split('-');
+  const userId = parts.slice(2, -1).join('-');
 
-  const user = users.find(u => u.id === userId || u.id === `user-${userId}` || u.id === `admin-${userId}`);
+  const user = await getUserById(userId);
 
   if (!user) {
     return res.status(401).json({
@@ -71,42 +55,40 @@ router.get('/me', asyncHandler(async (req, res) => {
     });
   }
 
-  const { password: _, ...userWithoutPassword } = user;
-
   res.json({
     success: true,
-    data: { user: userWithoutPassword }
+    data: { user: user.toJSON() }
   });
 }));
 
-// Register (mock)
+// Register (creates user role only)
 router.post('/register', asyncHandler(async (req, res) => {
   const { email, password, name, phone } = req.body;
 
-  if (users.find(u => u.email === email)) {
+  const existing = await getUserByEmail(email);
+  if (existing) {
     return res.status(400).json({
       success: false,
       error: { code: 'EMAIL_EXISTS', message: 'Email already registered' }
     });
   }
 
-  const newUser = {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await User.create({
     id: `user-${Date.now()}`,
     email,
-    password,
-    name,
-    phone,
+    password: hashedPassword,
+    name: name || 'User',
+    phone: phone || '',
     role: 'user'
-  };
+  });
 
-  users.push(newUser);
-
-  const { password: _, ...userWithoutPassword } = newUser;
+  const userObj = newUser.toJSON();
 
   res.status(201).json({
     success: true,
     data: {
-      user: userWithoutPassword,
+      user: userObj,
       token: `mock-token-${newUser.id}-${Date.now()}`
     }
   });

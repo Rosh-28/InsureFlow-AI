@@ -7,8 +7,8 @@ import { retryWithBackoff, AppError } from './errorHandler.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env from prototype directory (two levels up from services folder)
-dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
+// Load .env from server directory (one level up from services folder)
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 console.log('🔧 [Gemini] Initializing Gemini Service...');
 console.log('    API Key present:', !!process.env.GEMINI_API_KEY);

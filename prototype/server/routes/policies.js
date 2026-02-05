@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { asyncHandler } from '../services/errorHandler.js';
 import { extractTextFromImage } from '../services/geminiService.js';
-import { readData } from '../data/dataStore.js';
+import { getPolicies, getPolicyById } from '../data/mongoStore.js';
 
 const router = express.Router();
 
@@ -19,16 +19,16 @@ const upload = multer({
     console.log('    Original name:', file.originalname);
     console.log('    MIME type:', file.mimetype);
     console.log('    Field name:', file.fieldname);
-    
+
     const allowedMimes = [
-      'image/jpeg', 
-      'image/jpg', 
-      'image/png', 
-      'image/gif', 
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
       'image/webp',
       'application/pdf'
     ];
-    
+
     if (allowedMimes.includes(file.mimetype)) {
       console.log('✅ [Multer] File accepted');
       cb(null, true);
@@ -42,19 +42,16 @@ const upload = multer({
 // Get all policies for a user
 router.get('/', asyncHandler(async (req, res) => {
   const { userId } = req.query;
-  let policies = await readData('policies');
+  const filter = {};
+  if (userId) filter.userId = userId;
 
-  if (userId) {
-    policies = policies.filter(p => p.userId === userId);
-  }
-
+  const policies = await getPolicies(filter);
   res.json({ success: true, data: policies });
 }));
 
 // Get single policy by ID
 router.get('/:id', asyncHandler(async (req, res) => {
-  const policies = await readData('policies');
-  const policy = policies.find(p => p.id === req.params.id || p.policyNumber === req.params.id);
+  const policy = await getPolicyById(req.params.id);
 
   if (!policy) {
     return res.status(404).json({
@@ -69,8 +66,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 // Validate policy number
 router.post('/validate', asyncHandler(async (req, res) => {
   const { policyNumber } = req.body;
-  const policies = await readData('policies');
-  const policy = policies.find(p => p.policyNumber === policyNumber);
+  const policy = await getPolicyById(policyNumber);
 
   if (!policy) {
     return res.json({
@@ -110,7 +106,7 @@ router.post('/ocr', upload.single('document'), asyncHandler(async (req, res) => 
   console.log('=== OCR REQUEST STARTED ===');
   console.log('Timestamp:', new Date().toISOString());
   console.log('Request headers:', JSON.stringify(req.headers, null, 2));
-  
+
   if (!req.file) {
     console.error('❌ OCR Error: No file uploaded in request');
     return res.status(400).json({
@@ -132,13 +128,13 @@ router.post('/ocr', upload.single('document'), asyncHandler(async (req, res) => 
     console.warn('⚠️  Invalid MIME type:', req.file.mimetype);
     console.warn('    Valid types:', validMimeTypes.join(', '));
   }
-  
+
   const isPdf = req.file.mimetype === 'application/pdf';
   console.log('📄 Document type:', isPdf ? 'PDF' : 'Image');
 
   const base64Image = req.file.buffer.toString('base64');
   const mimeType = req.file.mimetype;
-  
+
   console.log('📝 Base64 encoding complete');
   console.log('  - Base64 string length:', base64Image.length);
   console.log('  - First 50 chars:', base64Image.substring(0, 50));
@@ -146,16 +142,16 @@ router.post('/ocr', upload.single('document'), asyncHandler(async (req, res) => 
   try {
     console.log('🔄 Calling extractTextFromImage function...');
     const startTime = Date.now();
-    
+
     const extractedData = await extractTextFromImage(base64Image, mimeType);
-    
+
     const processingTime = Date.now() - startTime;
     console.log('✅ OCR Processing completed in', processingTime, 'ms');
     console.log('📊 Extracted data:', JSON.stringify(extractedData, null, 2));
-    
+
     const confidence = extractedData.rawText ? 'low' : 'high';
     console.log('🎯 Confidence level:', confidence);
-    
+
     if (extractedData.rawText) {
       console.log('⚠️  Only raw text extracted - structured data parsing failed');
       console.log('    Raw text length:', extractedData.rawText.length);
@@ -170,7 +166,7 @@ router.post('/ocr', upload.single('document'), asyncHandler(async (req, res) => 
       data: {
         extracted: extractedData,
         confidence: confidence,
-        message: extractedData.rawText 
+        message: extractedData.rawText
           ? 'Could only extract raw text. Please verify the details.'
           : 'Successfully extracted policy details.'
       }
@@ -180,18 +176,18 @@ router.post('/ocr', upload.single('document'), asyncHandler(async (req, res) => 
     console.error('❌ Error type:', error.constructor.name);
     console.error('❌ Error message:', error.message);
     console.error('❌ Error stack:', error.stack);
-    
+
     if (error.response) {
       console.error('❌ API Response status:', error.response.status);
       console.error('❌ API Response data:', JSON.stringify(error.response.data, null, 2));
     }
-    
+
     if (error.code) {
       console.error('❌ Error code:', error.code);
     }
-    
+
     console.error('=== OCR REQUEST FAILED ===\n');
-    
+
     res.status(500).json({
       success: false,
       error: {

@@ -1,7 +1,7 @@
 import { StateGraph, END } from '@langchain/langgraph';
 import { verifyDocuments } from './documentVerifier.js';
 import { assessClaimRisk } from './riskDetector.js';
-import { readData } from '../data/dataStore.js';
+import { readData } from '../data/mongoStore.js';
 
 // Define the state schema
 const createInitialState = (claim, documents) => ({

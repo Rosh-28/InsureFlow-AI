@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { asyncHandler } from '../services/errorHandler.js';
 import { runClaimProcessingGraph } from '../agents/graph.js';
-import { readData, writeData } from '../data/dataStore.js';
+import { getClaims, getClaimById, createClaim, updateClaim } from '../data/mongoStore.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,8 +38,8 @@ const upload = multer({
 
 // Get claim statistics (must be before /:id route)
 router.get('/stats/overview', asyncHandler(async (req, res) => {
-  const claims = await readData('claims');
-  
+  const claims = await getClaims();
+
   const stats = {
     total: claims.length,
     pending: claims.filter(c => c.status === 'under_review' || c.status === 'processing').length,
@@ -64,28 +64,20 @@ router.get('/stats/overview', asyncHandler(async (req, res) => {
 // Get all claims (with optional filters)
 router.get('/', asyncHandler(async (req, res) => {
   const { status, type, userId } = req.query;
-  let claims = await readData('claims');
+  const filter = {};
 
-  if (status && status !== 'all') {
-    claims = claims.filter(c => c.status === status);
-  }
-  if (type) {
-    claims = claims.filter(c => c.type === type);
-  }
-  if (userId) {
-    claims = claims.filter(c => c.userId === userId);
-  }
+  if (status && status !== 'all') filter.status = status;
+  if (type) filter.type = type;
+  if (userId) filter.userId = userId;
 
-  // Sort by date descending
-  claims.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const claims = await getClaims(filter);
 
   res.json({ success: true, data: claims });
 }));
 
 // Get single claim by ID
 router.get('/:id', asyncHandler(async (req, res) => {
-  const claims = await readData('claims');
-  const claim = claims.find(c => c.id === req.params.id);
+  const claim = await getClaimById(req.params.id);
 
   if (!claim) {
     return res.status(404).json({
@@ -99,8 +91,23 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 // Create new claim with document processing
 router.post('/', upload.array('documents', 5), asyncHandler(async (req, res) => {
+  console.log('📝 [Claims Route] New claim request body:', req.body);
   const { userId, policyId, type, description, claimAmount, policyData } = req.body;
-  
+
+  if (!userId || !policyId) {
+    const missing = [];
+    if (!userId) missing.push('userId');
+    if (!policyId) missing.push('policyId');
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: `Missing required fields: ${missing.join(', ')}`,
+        details: req.body
+      }
+    });
+  }
+
   const files = req.files || [];
   const documents = files.map(f => ({
     id: uuidv4(),
@@ -132,7 +139,7 @@ router.post('/', upload.array('documents', 5), asyncHandler(async (req, res) => 
   // Run through AI agent pipeline
   try {
     const agentResult = await runClaimProcessingGraph(claim, documents);
-    
+
     claim.verification = agentResult.verification;
     claim.riskAssessment = agentResult.riskAssessment;
     claim.status = agentResult.recommendedStatus || 'under_review';
@@ -148,39 +155,36 @@ router.post('/', upload.array('documents', 5), asyncHandler(async (req, res) => 
   }
 
   // Save claim
-  const claims = await readData('claims');
-  claims.push(claim);
-  await writeData('claims', claims);
+  const savedClaim = await createClaim(claim);
 
-  res.status(201).json({ success: true, data: claim });
+  res.status(201).json({ success: true, data: savedClaim });
 }));
 
 // Update claim status (admin action)
 router.patch('/:id/status', asyncHandler(async (req, res) => {
   const { status, note, reviewedBy } = req.body;
-  const claims = await readData('claims');
-  const claimIndex = claims.findIndex(c => c.id === req.params.id);
+  const updated = await updateClaim(req.params.id, {
+    status,
+    reviewedBy,
+    updatedAt: new Date().toISOString(),
+    $push: {
+      statusHistory: {
+        status,
+        timestamp: new Date().toISOString(),
+        note: note || `Status changed to ${status}`,
+        by: reviewedBy
+      }
+    }
+  });
 
-  if (claimIndex === -1) {
+  if (!updated) {
     return res.status(404).json({
       success: false,
       error: { code: 'NOT_FOUND', message: 'Claim not found' }
     });
   }
 
-  claims[claimIndex].status = status;
-  claims[claimIndex].updatedAt = new Date().toISOString();
-  claims[claimIndex].reviewedBy = reviewedBy;
-  claims[claimIndex].statusHistory.push({
-    status,
-    timestamp: new Date().toISOString(),
-    note: note || `Status changed to ${status}`,
-    by: reviewedBy
-  });
-
-  await writeData('claims', claims);
-
-  res.json({ success: true, data: claims[claimIndex] });
+  res.json({ success: true, data: updated });
 }));
 
 export default router;

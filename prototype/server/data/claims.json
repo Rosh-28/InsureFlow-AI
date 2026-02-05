@@ -1,1 +1,137 @@
-[]
+[
+  {
+    "id": "CLM-1767848630649",
+    "userId": "user-1",
+    "policyId": "12345678",
+    "type": "health",
+    "description": "I want to use this claim for health purpose",
+    "claimAmount": 150000,
+    "policyData": {
+      "policyNumber": "12345678",
+      "holderName": "XYZ",
+      "type": "Health",
+      "claimAmount": 19500
+    },
+    "documents": [],
+    "status": "rejected",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2026-01-08T05:03:50.649Z",
+        "note": "Claim submitted"
+      },
+      {
+        "status": "under_review",
+        "timestamp": "2026-01-08T05:03:50.697Z",
+        "note": "AI processing complete"
+      },
+      {
+        "status": "rejected",
+        "timestamp": "2026-01-08T05:08:02.997Z",
+        "note": "Status changed to rejected",
+        "by": "admin-1"
+      }
+    ],
+    "createdAt": "2026-01-08T05:03:50.649Z",
+    "updatedAt": "2026-01-08T05:08:02.997Z",
+    "verification": {
+      "isValid": false,
+      "error": "Processing failed"
+    },
+    "riskAssessment": {
+      "riskScore": 5,
+      "riskLevel": "medium",
+      "recommendation": "review"
+    },
+    "reviewedBy": "admin-1"
+  },
+  {
+    "id": "CLM-1767862782654",
+    "userId": "user-1",
+    "policyId": "12345678",
+    "type": "health",
+    "description": "wow",
+    "claimAmount": 147852,
+    "policyData": {
+      "policyNumber": "12345678",
+      "holderName": "XYZ SURNAME FIRSTNAME MIDDLENAME",
+      "type": "Health",
+      "claimAmount": 19500
+    },
+    "documents": [],
+    "status": "approved",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2026-01-08T08:59:42.664Z",
+        "note": "Claim submitted"
+      },
+      {
+        "status": "under_review",
+        "timestamp": "2026-01-08T08:59:43.225Z",
+        "note": "AI processing complete"
+      },
+      {
+        "status": "approved",
+        "timestamp": "2026-02-01T16:38:10.614Z",
+        "note": "Status changed to approved",
+        "by": "admin-1"
+      }
+    ],
+    "createdAt": "2026-01-08T08:59:42.664Z",
+    "updatedAt": "2026-02-01T16:38:10.614Z",
+    "verification": {
+      "isValid": false,
+      "error": "Processing failed"
+    },
+    "riskAssessment": {
+      "riskScore": 5,
+      "riskLevel": "medium",
+      "recommendation": "review"
+    },
+    "reviewedBy": "admin-1"
+  },
+  {
+    "id": "CLM-1769963716625",
+    "userId": "user-1",
+    "policyId": "HLTH-2024-78901",
+    "type": "health",
+    "description": "hello I am applying for this because I want to apply ",
+    "claimAmount": 10,
+    "policyData": {
+      "type": "Health"
+    },
+    "documents": [],
+    "status": "approved",
+    "statusHistory": [
+      {
+        "status": "submitted",
+        "timestamp": "2026-02-01T16:35:16.625Z",
+        "note": "Claim submitted"
+      },
+      {
+        "status": "under_review",
+        "timestamp": "2026-02-01T16:35:17.043Z",
+        "note": "AI processing complete"
+      },
+      {
+        "status": "approved",
+        "timestamp": "2026-02-01T16:38:00.765Z",
+        "note": "Status changed to approved",
+        "by": "admin-1"
+      }
+    ],
+    "createdAt": "2026-02-01T16:35:16.625Z",
+    "updatedAt": "2026-02-01T16:38:00.765Z",
+    "verification": {
+      "isValid": false,
+      "error": "Processing failed"
+    },
+    "riskAssessment": {
+      "riskScore": 5,
+      "riskLevel": "medium",
+      "recommendation": "review"
+    },
+    "reviewedBy": "admin-1"
+  }
+]

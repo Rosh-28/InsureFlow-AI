@@ -2,12 +2,12 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../App';
 import { claimsApi, policiesApi } from '../../services/api';
-import { 
-  ChevronRight, 
-  ChevronLeft, 
-  Upload, 
-  FileText, 
-  X, 
+import {
+  ChevronRight,
+  ChevronLeft,
+  Upload,
+  FileText,
+  X,
   Check,
   Camera,
   Loader2,
@@ -133,7 +133,7 @@ export default function ApplyClaim() {
   const handlePolicyFileUpload = async (e) => {
     const file = e.target.files[0];
     console.log('📎 [OCR Client] File selected:', file ? 'Yes' : 'No');
-    
+
     if (!file) {
       console.log('⚠️  [OCR Client] No file selected, aborting');
       return;
@@ -152,21 +152,21 @@ export default function ApplyClaim() {
     try {
       console.log('🚀 [OCR Client] Calling policiesApi.ocr()...');
       const startTime = performance.now();
-      
+
       const result = await policiesApi.ocr(file);
-      
+
       const duration = (performance.now() - startTime).toFixed(2);
       console.log(`✅ [OCR Client] OCR completed in ${duration}ms`);
       console.log('📊 [OCR Client] Result:');
       console.log('    Confidence:', result.confidence);
       console.log('    Message:', result.message);
       console.log('    Extracted data:', result.extracted);
-      
+
       setOcrResult(result);
-      
+
       if (result.extracted) {
         console.log('✅ [OCR Client] Setting policy data from extracted information');
-        
+
         // Safely set policy data, filtering out null/undefined values
         const cleanedData = {};
         Object.entries(result.extracted).forEach(([key, value]) => {
@@ -174,9 +174,9 @@ export default function ApplyClaim() {
             cleanedData[key] = value;
           }
         });
-        
+
         setPolicyData(cleanedData);
-        
+
         if (result.extracted.policyNumber) {
           console.log('    Setting policy number:', result.extracted.policyNumber);
           setPolicyNumber(result.extracted.policyNumber);
@@ -210,7 +210,7 @@ export default function ApplyClaim() {
 
     try {
       const result = await policiesApi.validate(policyNumber);
-      
+
       if (!result.isValid) {
         setError(result.message || 'Invalid policy number');
         return false;
@@ -256,8 +256,8 @@ export default function ApplyClaim() {
       if (policyInputMode === 'manual') {
         const valid = await validatePolicy();
         if (!valid) return;
-      } else if (!policyData) {
-        setError('Please upload and verify your policy document');
+      } else if (!policyData || Object.keys(policyData).length === 0) {
+        setError('Please upload and verify your policy document, or enter details manually.');
         return;
       }
     }
@@ -296,9 +296,9 @@ export default function ApplyClaim() {
       });
 
       const result = await claimsApi.create(formData);
-      
+
       // Navigate to success/claim detail
-      navigate(`/claims/${result.id}`, { 
+      navigate(`/claims/${result.id}`, {
         state: { success: true, message: 'Claim submitted successfully!' }
       });
     } catch (err) {
@@ -328,18 +328,17 @@ export default function ApplyClaim() {
             <div key={step.id} className="flex items-center">
               <div className={`
                 w-8 h-8 rounded-full flex items-center justify-center font-medium text-sm
-                ${currentStep > step.id 
-                  ? 'bg-green-500 text-white' 
-                  : currentStep === step.id 
-                    ? 'bg-primary-600 text-white' 
+                ${currentStep > step.id
+                  ? 'bg-green-500 text-white'
+                  : currentStep === step.id
+                    ? 'bg-primary-600 text-white'
                     : 'bg-gray-200 text-gray-500'}
               `}>
                 {currentStep > step.id ? <Check size={16} /> : step.id}
               </div>
               {index < STEPS.length - 1 && (
-                <div className={`w-12 sm:w-24 h-1 mx-2 ${
-                  currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
-                }`} />
+                <div className={`w-12 sm:w-24 h-1 mx-2 ${currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
+                  }`} />
               )}
             </div>
           ))}
@@ -368,15 +367,14 @@ export default function ApplyClaim() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-900">Select Insurance Type</h2>
             <p className="text-gray-500">What type of insurance claim would you like to file?</p>
-            
+
             <div className="grid sm:grid-cols-2 gap-4 mt-6">
               <button
                 onClick={() => handleTypeSelect('health')}
-                className={`p-6 border-2 rounded-xl text-left transition-all ${
-                  claimType === 'health'
+                className={`p-6 border-2 rounded-xl text-left transition-all ${claimType === 'health'
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 <span className="text-4xl">🏥</span>
                 <h3 className="font-semibold text-gray-900 mt-3">Health Insurance</h3>
@@ -387,11 +385,10 @@ export default function ApplyClaim() {
 
               <button
                 onClick={() => handleTypeSelect('vehicle')}
-                className={`p-6 border-2 rounded-xl text-left transition-all ${
-                  claimType === 'vehicle'
+                className={`p-6 border-2 rounded-xl text-left transition-all ${claimType === 'vehicle'
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 <span className="text-4xl">🚗</span>
                 <h3 className="font-semibold text-gray-900 mt-3">Vehicle Insurance</h3>
@@ -407,27 +404,25 @@ export default function ApplyClaim() {
         {currentStep === 2 && (
           <div className="space-y-6">
             <h2 className="text-lg font-semibold text-gray-900">Policy Details</h2>
-            
+
             {/* Input Mode Toggle */}
             <div className="flex rounded-lg bg-gray-100 p-1">
               <button
                 onClick={() => setPolicyInputMode('ocr')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-colors ${
-                  policyInputMode === 'ocr' 
-                    ? 'bg-white shadow text-primary-600' 
+                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-colors ${policyInputMode === 'ocr'
+                    ? 'bg-white shadow text-primary-600'
                     : 'text-gray-600'
-                }`}
+                  }`}
               >
                 <Camera size={18} />
                 Scan Document
               </button>
               <button
                 onClick={() => setPolicyInputMode('manual')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-colors ${
-                  policyInputMode === 'manual' 
-                    ? 'bg-white shadow text-primary-600' 
+                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-colors ${policyInputMode === 'manual'
+                    ? 'bg-white shadow text-primary-600'
                     : 'text-gray-600'
-                }`}
+                  }`}
               >
                 <Keyboard size={18} />
                 Enter Manually
@@ -439,12 +434,11 @@ export default function ApplyClaim() {
                 <p className="text-gray-500">
                   Upload your policy document and we'll extract the details automatically
                 </p>
-                
+
                 <div
                   onClick={() => !ocrLoading && document.getElementById('policy-upload').click()}
-                  className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-                    ocrLoading ? 'border-gray-200 bg-gray-50' : 'border-gray-300 hover:border-primary-400'
-                  }`}
+                  className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${ocrLoading ? 'border-gray-200 bg-gray-50' : 'border-gray-300 hover:border-primary-400'
+                    }`}
                 >
                   <input
                     id="policy-upload"
@@ -454,7 +448,7 @@ export default function ApplyClaim() {
                     className="hidden"
                     disabled={ocrLoading}
                   />
-                  
+
                   {ocrLoading ? (
                     <div className="flex flex-col items-center">
                       <Loader2 size={40} className="text-primary-600 animate-spin mb-3" />
@@ -483,13 +477,13 @@ export default function ApplyClaim() {
                       {Object.entries(ocrResult.extracted).map(([key, value]) => {
                         // Skip null, undefined, or nested object values
                         if (value === null || value === undefined || typeof value === 'object') return null;
-                        
+
                         // Format the key nicely
                         const formattedKey = key
                           .replace(/([A-Z])/g, ' $1')
                           .replace(/^./, str => str.toUpperCase())
                           .trim();
-                        
+
                         return (
                           <div key={key} className="flex flex-col">
                             <span className="text-gray-500 text-xs font-medium">{formattedKey}</span>
@@ -546,7 +540,7 @@ export default function ApplyClaim() {
         {currentStep === 3 && (
           <div className="space-y-6">
             <h2 className="text-lg font-semibold text-gray-900">Upload Supporting Documents</h2>
-            
+
             {requirements && (
               <div className="p-4 bg-primary-50 border border-primary-200 rounded-lg">
                 <h4 className="font-medium text-primary-800 mb-2">Required Documents</h4>
@@ -608,7 +602,7 @@ export default function ApplyClaim() {
         {currentStep === 4 && (
           <div className="space-y-6">
             <h2 className="text-lg font-semibold text-gray-900">Claim Details</h2>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Claim Amount (₹)
@@ -635,11 +629,10 @@ export default function ApplyClaim() {
                 <button
                   type="button"
                   onClick={toggleListening}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    isListening 
-                      ? 'bg-red-100 text-red-700 hover:bg-red-200' 
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${isListening
+                      ? 'bg-red-100 text-red-700 hover:bg-red-200'
                       : 'bg-primary-100 text-primary-700 hover:bg-primary-200'
-                  }`}
+                    }`}
                 >
                   {isListening ? (
                     <>
@@ -665,9 +658,8 @@ export default function ApplyClaim() {
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
                 placeholder="Describe the reason for your claim... or click 'Speak' to use voice input"
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  isListening ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${isListening ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
               />
             </div>
           </div>
@@ -677,7 +669,7 @@ export default function ApplyClaim() {
         {currentStep === 5 && (
           <div className="space-y-6">
             <h2 className="text-lg font-semibold text-gray-900">Review Your Claim</h2>
-            
+
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="text-sm font-medium text-gray-500 mb-2">Claim Type</h4>
@@ -712,7 +704,7 @@ export default function ApplyClaim() {
 
             <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p className="text-sm text-yellow-800">
-                ⚠️ By submitting this claim, you confirm that all information provided is accurate and complete. 
+                ⚠️ By submitting this claim, you confirm that all information provided is accurate and complete.
                 False claims may result in policy termination.
               </p>
             </div>

@@ -1,8 +1,18 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Also try loading from parent directory just in case
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
+
+// MongoDB
+import { connectMongoDB } from './data/mongoConnection.js';
 
 // Routes
 import claimsRouter from './routes/claims.js';
@@ -13,12 +23,6 @@ import authRouter from './routes/auth.js';
 
 // Error handler
 import { errorHandler } from './services/errorHandler.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load .env from prototype directory (parent directory)
-dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,9 +50,20 @@ app.get('/api/health', (req, res) => {
 // Error handling middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📋 API Health: http://localhost:${PORT}/api/health`);
-});
+// Start server after MongoDB connection
+const startServer = async () => {
+  try {
+    await connectMongoDB();
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`📋 API Health: http://localhost:${PORT}/api/health`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err.message);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 export default app;

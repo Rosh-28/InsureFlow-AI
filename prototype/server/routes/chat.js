@@ -1,7 +1,7 @@
 import express from 'express';
 import { asyncHandler } from '../services/errorHandler.js';
 import { chatCompletion } from '../services/geminiService.js';
-import { readData } from '../data/dataStore.js';
+import { readData } from '../data/mongoStore.js';
 
 const router = express.Router();
 
@@ -54,7 +54,7 @@ router.post('/', asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    data: {
+    data: { 
       sessionId: session.id,
       message: response,
       timestamp: new Date().toISOString()
